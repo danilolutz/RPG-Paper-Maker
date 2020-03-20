@@ -1,6 +1,8 @@
 language: cpp
 
 osx_image: xcode10.1
+os: linux
+dist: xenial
 
 env:
   global:
@@ -10,6 +12,7 @@ jobs:
   include:
     - os: linux
       dist: xenial
+      sudo: required
       compiler: gcc
       env:
         - QT_MAJOR=5
