@@ -1,7 +1,6 @@
 # RPG Paper Maker
 
 [![Build](https://travis-ci.org/RPG-Paper-Maker/RPG-Paper-Maker.svg?branch=develop)](https://travis-ci.org/RPG-Paper-Maker/RPG-Paper-Maker)
-[![Build](https://ci.appveyor.com/api/projects/status/iee74loc36pu1r0t?svg=true)](https://ci.appveyor.com/project/Wano-k/rpg-paper-maker)
 [![Join to the community at https://discordapp.com/invite/QncEnCE](https://img.shields.io/badge/Discord-RPG%20Paper%20Maker%20Community-blueviolet?logo=discord)](https://discordapp.com/invite/QncEnCE)
 
 ## Overview
