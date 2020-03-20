@@ -45,7 +45,7 @@ before_install:
 
 install:
   - export QT_SELECT=qt${QT_MAJOR}
-  - ln -s /usr/lib/x86_64-linux-gnu/libOpenCL.so.1 /usr/lib/libOpenCL.so
+  - sudo ln -s /usr/lib/x86_64-linux-gnu/libOpenCL.so.1 /usr/lib/libOpenCL.so
   - $CXX --version
   - |
     if [ "$CXX" = "g++" ]; then
