@@ -37,6 +37,7 @@ before_install:
       sudo apt-get update -qq
       sudo apt-get install -qq qt${QT_SHORT}base qt${QT_SHORT}multimedia
       sudo apt-get install -qq libpulse-dev
+      sudo ln -s /usr/lib/x86_64-linux-gnu/libOpenCL.so.1 /usr/lib/libOpenCL.so
     fi
   - |
     if [ "$CXX" = "clang++" ]; then
@@ -46,7 +47,6 @@ before_install:
 
 install:
   - export QT_SELECT=qt${QT_MAJOR}
-  - sudo ln -s /usr/lib/x86_64-linux-gnu/libOpenCL.so.1 /usr/lib/libOpenCL.so
   - $CXX --version
   - |
     if [ "$CXX" = "g++" ]; then
