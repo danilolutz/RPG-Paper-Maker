@@ -6,11 +6,10 @@ env:
   global:
     - MAKEFLAGS="-j 2"
 
-matrix:
+jobs:
   include:
     - os: linux
       dist: xenial
-      sudo: required
       compiler: gcc
       env:
         - QT_MAJOR=5
@@ -20,7 +19,6 @@ matrix:
         apt:
           packages:
             - libglu1-mesa-dev
-            - libXxf86vm-dev
     - os: osx
       compiler: clang
       env:
