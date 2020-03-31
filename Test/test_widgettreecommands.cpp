@@ -10,6 +10,7 @@
 */
 #include <QtTest>
 
+#include "rpm.h"
 #include "widgettreecommands.h"
 
 class TestWidgetTreeCommands : public QObject
@@ -48,8 +49,10 @@ void TestWidgetTreeCommands::cleanupTestCase()
 
 void TestWidgetTreeCommands::test_initializeModel_noSelection()
 {
-    WidgetTreeCommands dummyWidgetTree;
+    RPM::readTranslations();
+
     QStandardItemModel dummyModel;
+    WidgetTreeCommands dummyWidgetTree;
 
     dummyWidgetTree.initializeModel(&dummyModel);
 
