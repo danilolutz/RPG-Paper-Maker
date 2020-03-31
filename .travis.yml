@@ -77,8 +77,8 @@ before_install:
   - |
     if [ "$TRAVIS_OS_NAME" = "windows" ]; then
       choco install svn
-      sudo apt-get update -qq
-      sudo apt-get install -qq svn
+      apt-get update -qq
+      apt-get install -qq svn
     fi
 
 install:
