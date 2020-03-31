@@ -9,7 +9,6 @@
         http://rpg-paper-maker.com/index.php/eula.
 */
 #include <QtTest>
-
 #include "rpm.h"
 #include "widgettreecommands.h"
 
@@ -39,7 +38,8 @@ TestWidgetTreeCommands::~TestWidgetTreeCommands()
 
 void TestWidgetTreeCommands::initTestCase()
 {
-
+    // Load RPM translations
+    RPM::get()->readTranslations();
 }
 
 void TestWidgetTreeCommands::cleanupTestCase()
@@ -49,7 +49,6 @@ void TestWidgetTreeCommands::cleanupTestCase()
 
 void TestWidgetTreeCommands::test_initializeModel_noSelection()
 {
-    RPM::readTranslations();
 
     QStandardItemModel dummyModel;
     WidgetTreeCommands dummyWidgetTree;
