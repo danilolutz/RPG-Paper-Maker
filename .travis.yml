@@ -1,6 +1,8 @@
 language: cpp
 
-osx_image: xcode10.1
+git:
+  depth: 3
+
 os: linux
 dist: xenial
 
@@ -33,6 +35,7 @@ jobs:
         - make
         - xvfb-run make -k check
     - os: osx
+      osx_image: xcode10.1
       stage: compile
       compiler: clang
       env:
@@ -80,11 +83,11 @@ install:
   - export QT_SELECT=qt${QT_MAJOR}
   - $CXX --version
   - |
-    if [ "$CXX" = "g++" ]; then
+    if [ "$TRAVIS_OS_NAME" = "linux" ]; then
       . /opt/qt${QT_SHORT}/bin/qt${QT_SHORT}-env.sh
     fi
   - |
-    if [ "$CXX" = "clang++" ]; then
+    if [ "$TRAVIS_OS_NAME" = "osx" ]; then
       brew link --force qt${QT_MAJOR}
     fi
   - ./update-mods
