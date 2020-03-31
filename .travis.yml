@@ -45,7 +45,7 @@ jobs:
         - make -k check
     - os: windows
       stage: compile
-      compiler: clang
+      compiler: gcc
       env:
         # current brew stable is 5.11.2
         - QT_MAJOR=5
@@ -73,7 +73,7 @@ before_install:
     fi
   - |
     if [ "$TRAVIS_OS_NAME" = "windows" ]; then
-      choco install qt-sdk-windows-x86-mingw_opengl
+      choco install mingw
     fi
 
 install:
