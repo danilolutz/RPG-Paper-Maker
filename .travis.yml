@@ -90,7 +90,12 @@ install:
     if [ "$TRAVIS_OS_NAME" = "osx" ]; then
       brew link --force qt${QT_MAJOR}
     fi
-  - ./update-mods
+  - |
+    if [ "$TRAVIS_OS_NAME" = "windows" ]; then
+      update-mods.bat
+    else
+      ./update-mods
+    fi
 
 # script:
 #   - qmake -v
