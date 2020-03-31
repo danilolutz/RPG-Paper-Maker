@@ -4,6 +4,10 @@ osx_image: xcode10.1
 os: linux
 dist: xenial
 
+stages:
+  - compile
+  - test
+
 env:
   global:
     - MAKEFLAGS="-j 2"
@@ -11,6 +15,7 @@ env:
 jobs:
   include:
     - os: linux
+      stage: test
       dist: xenial
       sudo: required
       compiler: gcc
@@ -22,11 +27,22 @@ jobs:
         apt:
           packages:
             - libglu1-mesa-dev
+      script:
+        - qmake -v
+        - qmake -r "QMAKE_CXX=$CXX" "QMAKE_CC=$CC"
+        - make
+        - xvfb-run make -k check
     - os: osx
+      stage: test
       compiler: clang
       env:
         # current brew stable is 5.11.2
         - QT_MAJOR=5
+      script:
+        - qmake -v
+        - qmake -r "QMAKE_CXX=$CXX" "QMAKE_CC=$CC"
+        - make
+        - make -k check
 
 before_install:
   - |
@@ -58,14 +74,14 @@ install:
     fi
   - ./update-mods
 
-script:
-  - qmake -v
-  - qmake -r "QMAKE_CXX=$CXX" "QMAKE_CC=$CC"
-  - make
-  # Run with X11 display on Linux as some tests require a Qt app
-  - |
-    if [ "$TRAVIS_OS_NAME" == "linux" ]; then
-      xvfb-run make -k check
-    else
-      make -k check
-    fi
+# script:
+#   - qmake -v
+#   - qmake -r "QMAKE_CXX=$CXX" "QMAKE_CC=$CC"
+#   - make
+#   # Run with X11 display on Linux as some tests require a Qt app
+#   - |
+#     if [ "$TRAVIS_OS_NAME" == "linux" ]; then
+#       xvfb-run make -k check
+#     else
+#       make -k check
+#     fi
