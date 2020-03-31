@@ -76,7 +76,7 @@ before_install:
     fi
   - |
     if [ "$TRAVIS_OS_NAME" = "windows" ]; then
-      choco install mingw
+      choco install svn
     fi
 
 install:
