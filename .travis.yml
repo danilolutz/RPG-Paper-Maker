@@ -42,8 +42,7 @@ jobs:
         # current brew stable is 5.11.2
         - QT_MAJOR=5
       script:
-        - qmake -v
-        - qmake #-r "QMAKE_CXX=$CXX" "QMAKE_CC=$CC"
+        - qmake
         - make
         - make -k check
     - os: windows
@@ -52,10 +51,6 @@ jobs:
       env:
         - QT_VERSION=5.11.2
       script:
-        - ls -lah /c/Qt/
-        - ls -lah /c/Qt/${QT_VERSION}
-        - ls -lah /c/Qt/${QT_VERSION}/mingw53_32/
-        - /c/Qt/${QT_VERSION}/mingw53_32/bin/qmake.exe "--version"
         - /c/Qt/${QT_VERSION}/mingw53_32/bin/qmake.exe
         - make -k check
 
@@ -77,8 +72,7 @@ before_install:
     fi
   - |
     if [ "$TRAVIS_OS_NAME" = "windows" ]; then
-      choco install slik.svn
-      ./scripts/install-qt.sh -d /c/Qt --version ${QT_VERSION} --toolchain win32_mingw53 qtbase qtdeclarative qttools qtscript qtmultimedia
+      ./scripts/install-qt.sh -d /c/Qt --version ${QT_VERSION} --toolchain win32_mingw53 qtbase qtdeclarative qttools qtscript qtmultimedia tools_mingw
     fi
 
 install:
