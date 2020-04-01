@@ -1,59 +1,38 @@
 #!/bin/bash
+set -e
 
-modsPath='./mods'
-localMessage='Local copy: '
-githubMessage='Github repository copy: '
-moveSymbol='->'
+MODS_PATH='./mods'
+LOCAL_MSG='Local copy:'
+REMOTE_MSG='Github repository copy:'
+MV_SYMBOL='->'
+GIT_ROOT='https://github.com/RPG-Paper-Maker/'
 
-if [ -d $modsPath ]; then
-	rm -r $modsPath
+if [ -d $MODS_PATH ]; then
+	rm -rf $MODS_PATH
 fi
 mkdir mods
+mkdir "${MODS_PATH}/BR"
 
-path='../Game-Scripts/Content/Datas/Scripts'
-pathModsScript="${modsPath}/Scripts"
-if [ -d $path ]; then
-	echo "$localMessage $path $moveSymbol $pathModsScript"
-	cp -r $path $pathModsScript
-else
-	pathGit="https://github.com/RPG-Paper-Maker/Game-Scripts/trunk/Content/Datas/Scripts"
-	echo "$githubMessage $pathGit $moveSymbol $modsPath"
-	if [ "$TRAVIS_OS_NAME" = "windows" ]; then
-		powershell 'c:\Program` Files\SlikSvn\bin\svn.exe export'  --non-interactive --force  $pathGit $pathModsScript
-	else
-		svn export $pathGit $pathModsScript
-	fi
-fi
+PATHS=("../Game-Scripts/Content/Datas/Scripts" "../Basic-Ressources/Content" "../Dependencies/Game")
+PATHS_MODS=("${MODS_PATH}/Scripts" "${MODS_PATH}/BR/Content" "${MODS_PATH}/Game")
+# SVN_PATH=("Game-Scripts/trunk/Content/Datas/Scripts" "Basic-Ressources/trunk/Content" "Dependencies/trunk/Game")
+GIT_PATH=("Game-Scripts" "Basic-Ressources" "Dependencies")
+FOLDER_PATH=("Content/Datas/Scripts" "Content" "Game")
 
-path='../Basic-Ressources/Content'
-pathModsBR="${modsPath}/BR/Content"
-mkdir "${modsPath}/BR"
-if [ -d $path ]; then
-	echo "$localMessage $path $moveSymbol $pathModsBR"
-	cp -r $path $pathModsBR
-else
-	pathGit="https://github.com/RPG-Paper-Maker/Basic-Ressources/trunk/Content"
-	echo "$githubMessage $pathGit $moveSymbol $pathModsBR"
-	if [ "$TRAVIS_OS_NAME" = "windows" ]; then
-		powershell 'c:\Program` Files\SlikSvn\bin\svn.exe export'  --non-interactive --force  $pathGit $pathModsBR
+for ((x=0; x < ${#PATHS[*]}; x++)) ; do
+	if [ -d ${PATHS[$x]} ]; then
+		echo "$LOCAL_MSG ${PATHS[$x]} $MV_SYMBOL ${PATHS_MODS[$x]}"
+		cp -r ${PATHS[$x]} ${PATHS_MODS[$x]}
 	else
-		svn export $pathGit $pathModsBR
-	fi
-fi
+		PATH_GIT="${GIT_ROOT}${SVN_PATH[$x]}"
+		PATH_TEMP="~/temp/${GIT_PATH[$x]}"
 
-path='../Dependencies/Game'
-pathModsGame="${modsPath}/Game"
-if [ -d $path ]; then
-	echo "$localMessage $path $moveSymbol $pathModsGame"
-	cp -r $path $pathModsGame
-else
-	pathGit="https://github.com/RPG-Paper-Maker/Dependencies/trunk/Game"
-	echo "$githubMessage $pathGit $moveSymbol $pathModsGame"
-	if [ "$TRAVIS_OS_NAME" = "windows" ]; then
-		# powershell 'c:\Program` Files\SlikSvn\bin\svn.exe export' --native-eol CRLF --non-interactive --force $pathGit $pathModsGame
-		git clone --depth 3 https://github.com/RPG-Paper-Maker/Dependencies.git /c/temp/Dependencies
-		cp -Rfv /c/temp/Dependencies/Game $pathModsGame
-	else
-		svn export $pathGit $pathModsGame
+		echo "$REMOTE_MSG $PATH_GIT $MV_SYMBOL ${PATHS_MODS[$x]}"
+		if [ -d $PATH_TEMP ]; then
+			rm -Rf $PATH_TEMP
+		fi
+		git clone --depth 1 "https://github.com/RPG-Paper-Maker/${GIT_PATH[$x]}.git" $PATH_TEMP
+		rm -Rf "${PATH_TEMP}/.git ${PATH_TEMP}/.gitignore"
+		cp -Rf "${PATH_TEMP}/${FOLDER_PATH[$x]}" ${PATHS_MODS[$x]}
 	fi
-fi
+done

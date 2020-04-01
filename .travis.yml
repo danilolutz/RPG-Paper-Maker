@@ -85,17 +85,12 @@ install:
   - |
     if [ "$TRAVIS_OS_NAME" = "linux" ]; then
       . /opt/qt${QT_SHORT}/bin/qt${QT_SHORT}-env.sh
-      ./update-mods
     fi
   - |
     if [ "$TRAVIS_OS_NAME" = "osx" ]; then
       brew link --force qt${QT_MAJOR}
-      ./update-mods
     fi
-  - |
-    if [ "$TRAVIS_OS_NAME" = "windows" ]; then
-      ./update-mods
-    fi
+    ./update-mods
 
 # script:
 #   - qmake -v
