@@ -50,11 +50,11 @@ jobs:
       stage: compile
       compiler: gcc
       env:
-        # current brew stable is 5.11.2
-        - QT_MAJOR=5
+        - QT_VERSION=5.11.2
       script:
-        - ls -lah /c/Qt/5.11.2/mingw53_32/
-        - ls -lah /c/Qt/5.11.2/mingw53_32/bin
+        - ls -lah /c/Qt/${QT_VERSION}/Tools/mingw530_32/bin
+        - /c/Qt/${QT_VERSION}/mingw53_32/bin/qmake.exe "--version"
+        - /c/Qt/${QT_VERSION}/mingw53_32/bin/qmake.exe "--version"
 
 before_install:
   - |
@@ -75,7 +75,7 @@ before_install:
   - |
     if [ "$TRAVIS_OS_NAME" = "windows" ]; then
       choco install slik.svn
-      ./scripts/install-qt.sh -d /c/Qt --version 5.11.2 --toolchain win32_mingw53 qtbase qtdeclarative qttools qtscript qtmultimedia
+      ./scripts/install-qt.sh -d /c/Qt --version ${QT_VERSION} --toolchain win32_mingw53 qtbase qtdeclarative qttools qtscript qtmultimedia
     fi
 
 install:
