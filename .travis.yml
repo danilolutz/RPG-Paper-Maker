@@ -53,10 +53,8 @@ jobs:
         # current brew stable is 5.11.2
         - QT_MAJOR=5
       script:
-        - qmake -v
-        - qmake -r "QMAKE_CXX=$CXX" "QMAKE_CC=$CC"
-        - make
-        - make -k check
+        - ls -lah /c/Qt/
+        - ls -lah /c/Qt/5.11.2
 
 before_install:
   - |

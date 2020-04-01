@@ -31,7 +31,7 @@ for ((x=0; x < ${#PATHS[*]}; x++)) ; do
 		if [ -d $PATH_TEMP ]; then
 			rm -Rf $PATH_TEMP
 		fi
-		git clone --bare --depth 1 "https://github.com/RPG-Paper-Maker/${GIT_PATH[$x]}.git" $PATH_TEMP
+		git clone --depth 1 "https://github.com/RPG-Paper-Maker/${GIT_PATH[$x]}.git" $PATH_TEMP
 		rm -Rf "${PATH_TEMP}/.git ${PATH_TEMP}/.gitignore"
 		cp -Rf "${PATH_TEMP}/${FOLDER_PATH[$x]}" ${PATHS_MODS[$x]}
 	fi
