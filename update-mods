@@ -53,6 +53,7 @@ else
 		# powershell 'c:\Program` Files\SlikSvn\bin\svn.exe export' --native-eol CRLF --non-interactive --force $pathGit $pathModsGame
 		git clone --depth 3 https://github.com/RPG-Paper-Maker/Dependencies.git /c/temp/Dependencies
 		cp -Rf /c/temp/Dependencies/Game $pathModsGame
+		ls $pathModsGame
 	else
 		svn export $pathGit $pathModsGame
 	fi
