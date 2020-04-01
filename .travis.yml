@@ -76,7 +76,7 @@ before_install:
     fi
   - |
     if [ "$TRAVIS_OS_NAME" = "windows" ]; then
-      ./scripts/install_qt.sh -d /c/Qt --version 5.11.2 --toolchain win32_mingw53 qtbase qtdeclarative qttools qtscript qtmultimedia
+      ./scripts/install-qt.sh -d /c/Qt --version 5.11.2 --toolchain win32_mingw53 qtbase qtdeclarative qttools qtscript qtmultimedia
     fi
 
 install:
