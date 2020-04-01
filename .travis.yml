@@ -52,7 +52,7 @@ jobs:
       env:
         - QT_VERSION=5.11.2
       script:
-        - ls -lah /c/Qt/Tools/mingw530_32/bin
+        - ls -lah /c/Qt/${QT_VERSION}/mingw53_32/bin/
         - /c/Qt/${QT_VERSION}/mingw53_32/bin/qmake.exe "--version"
         - /c/Qt/${QT_VERSION}/mingw53_32/bin/qmake.exe
 
