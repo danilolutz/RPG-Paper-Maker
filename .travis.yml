@@ -57,6 +57,7 @@ jobs:
         - ls -lah /c/Qt/${QT_VERSION}/mingw53_32/
         - /c/Qt/${QT_VERSION}/mingw53_32/bin/qmake.exe "--version"
         - /c/Qt/${QT_VERSION}/mingw53_32/bin/qmake.exe
+        - make -k check
 
 before_install:
   - |
