@@ -53,8 +53,8 @@ jobs:
         # current brew stable is 5.11.2
         - QT_MAJOR=5
       script:
-        - ls -lah /c/Qt/
-        - ls -lah /c/Qt/5.11.2
+        - ls -lah /c/Qt/5.11.2/mingw53_32/
+        - ls -lah /c/Qt/5.11.2/mingw53_32/bin
 
 before_install:
   - |

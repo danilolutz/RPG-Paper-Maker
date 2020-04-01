@@ -15,7 +15,6 @@ mkdir "${MODS_PATH}/BR"
 
 PATHS=("../Game-Scripts/Content/Datas/Scripts" "../Basic-Ressources/Content" "../Dependencies/Game")
 PATHS_MODS=("${MODS_PATH}/Scripts" "${MODS_PATH}/BR/Content" "${MODS_PATH}/Game")
-# SVN_PATH=("Game-Scripts/trunk/Content/Datas/Scripts" "Basic-Ressources/trunk/Content" "Dependencies/trunk/Game")
 GIT_PATH=("Game-Scripts" "Basic-Ressources" "Dependencies")
 FOLDER_PATH=("Content/Datas/Scripts" "Content" "Game")
 
@@ -24,14 +23,14 @@ for ((x=0; x < ${#PATHS[*]}; x++)) ; do
 		echo "$LOCAL_MSG ${PATHS[$x]} $MV_SYMBOL ${PATHS_MODS[$x]}"
 		cp -r ${PATHS[$x]} ${PATHS_MODS[$x]}
 	else
-		PATH_GIT="${GIT_ROOT}${SVN_PATH[$x]}"
+		PATH_GIT="${GIT_ROOT}${GIT_PATH[$x]}"
 		PATH_TEMP="~/temp/${GIT_PATH[$x]}"
 
 		echo "$REMOTE_MSG $PATH_GIT $MV_SYMBOL ${PATHS_MODS[$x]}"
 		if [ -d $PATH_TEMP ]; then
 			rm -Rf $PATH_TEMP
 		fi
-		git clone --depth 1 "https://github.com/RPG-Paper-Maker/${GIT_PATH[$x]}.git" $PATH_TEMP
+		git clone --branch develop --single-branch --depth 1 "https://github.com/RPG-Paper-Maker/${GIT_PATH[$x]}.git" $PATH_TEMP
 		rm -Rf "${PATH_TEMP}/.git ${PATH_TEMP}/.gitignore"
 		cp -Rf "${PATH_TEMP}/${FOLDER_PATH[$x]}" ${PATHS_MODS[$x]}
 	fi
