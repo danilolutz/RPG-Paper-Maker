@@ -20,6 +20,7 @@ else
 	echo "$githubMessage $pathGit $moveSymbol $modsPath"
 	if [ "$TRAVIS_OS_NAME" = "windows" ]; then
 		powershell 'c:\Program` Files\SlikSvn\bin\svn.exe export' $pathGit $pathModsScript
+		powershell 'c:\Program` Files\SlikSvn\bin\svn.exe unlock' $pathModsScript
 	else
 		svn export $pathGit $pathModsScript
 	fi
@@ -36,6 +37,7 @@ else
 	echo "$githubMessage $pathGit $moveSymbol $pathModsBR"
 	if [ "$TRAVIS_OS_NAME" = "windows" ]; then
 		powershell 'c:\Program` Files\SlikSvn\bin\svn.exe export' $pathGit $pathModsBR
+		powershell 'c:\Program` Files\SlikSvn\bin\svn.exe unlock' $pathModsBR
 	else
 		svn export $pathGit $pathModsBR
 	fi
@@ -50,7 +52,7 @@ else
 	pathGit="https://github.com/RPG-Paper-Maker/Dependencies/trunk/Game"
 	echo "$githubMessage $pathGit $moveSymbol $pathModsGame"
 	if [ "$TRAVIS_OS_NAME" = "windows" ]; then
-		powershell 'c:\Program` Files\SlikSvn\bin\svn.exe export' --ignore-externals --force $pathGit $pathModsGame
+		powershell 'c:\Program` Files\SlikSvn\bin\svn.exe export' --force $pathGit $pathModsGame
 	else
 		svn export $pathGit $pathModsGame
 	fi
