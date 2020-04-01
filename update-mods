@@ -18,7 +18,11 @@ if [ -d $path ]; then
 else
 	pathGit="https://github.com/RPG-Paper-Maker/Game-Scripts/trunk/Content/Datas/Scripts"
 	echo "$githubMessage $pathGit $moveSymbol $modsPath"
-	svn export $pathGit $pathModsScript
+	if [ "$TRAVIS_OS_NAME" = "windows" ]; then
+		cmd.exe /"$TRAVIS_BUILD_DIR" svn export $pathGit $pathModsScript
+	else
+		svn export $pathGit $pathModsScript
+	fi
 fi
 
 path='../Basic-Ressources/Content'
