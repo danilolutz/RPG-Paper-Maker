@@ -52,7 +52,7 @@ jobs:
         - QT_VERSION=5.11.2
       script:
         - /c/Qt/${QT_VERSION}/mingw53_32/bin/qmake.exe
-        - make -k check
+        - /c/Qt/Tools/bin/mingw32-make.exe -k check
 
 before_install:
   - |
