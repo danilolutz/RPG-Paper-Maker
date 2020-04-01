@@ -19,7 +19,7 @@ else
 	pathGit="https://github.com/RPG-Paper-Maker/Game-Scripts/trunk/Content/Datas/Scripts"
 	echo "$githubMessage $pathGit $moveSymbol $modsPath"
 	if [ "$TRAVIS_OS_NAME" = "windows" ]; then
-		cmd.exe /C 'cd "$TRAVIS_BUILD_DIR" && svn export $pathGit $pathModsScript'
+		cmd.exe /C 'cd $TRAVIS_BUILD_DIR && svn export "$pathGit" "$pathModsScript"'
 	else
 		svn export $pathGit $pathModsScript
 	fi
@@ -35,9 +35,9 @@ else
 	pathGit="https://github.com/RPG-Paper-Maker/Basic-Ressources/trunk/Content"
 	echo "$githubMessage $pathGit $moveSymbol $pathModsBR"
 	if [ "$TRAVIS_OS_NAME" = "windows" ]; then
-		cmd.exe /C 'cd "$TRAVIS_BUILD_DIR" && svn export $pathGit $pathModsScript'
+		cmd.exe /C 'cd $TRAVIS_BUILD_DIR && svn export "$pathGit" "$pathModsBR"'
 	else
-		svn export $pathGit $pathModsScript
+		svn export $pathGit $pathModsBR
 	fi
 fi
 
@@ -50,8 +50,8 @@ else
 	pathGit="https://github.com/RPG-Paper-Maker/Dependencies/trunk/Game"
 	echo "$githubMessage $pathGit $moveSymbol $pathModsGame"
 	if [ "$TRAVIS_OS_NAME" = "windows" ]; then
-		cmd.exe /C 'cd "$TRAVIS_BUILD_DIR" && svn export $pathGit $pathModsScript'
+		cmd.exe /C 'cd $TRAVIS_BUILD_DIR && svn export "$pathGit" "$pathModsGame"'
 	else
-		svn export $pathGit $pathModsScript
+		svn export $pathGit $pathModsGame
 	fi
 fi
