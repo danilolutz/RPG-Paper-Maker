@@ -246,7 +246,7 @@ mkdir -p ${INSTALL_DIR}
 for COMPONENT in ${COMPONENTS}; do
 
     URL="$(compute_url ${COMPONENT})"
-    echo "Downloading ${COMPONENT} from ${URL} ..." >&2
+    echo "Downloading ${COMPONENT} from ${URL} and install in ${INSTALL_DIR} ..." >&2
     curl --progress-bar -L -o ${DOWNLOAD_DIR}/package.7z ${URL} >&2
     7z x -y -o${INSTALL_DIR} ${DOWNLOAD_DIR}/package.7z >/dev/null 2>&1
     rm -f ${DOWNLOAD_DIR}/package.7z
