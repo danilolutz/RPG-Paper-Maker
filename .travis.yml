@@ -72,8 +72,8 @@ jobs:
         - export PATH=/c/Qt/Tools/mingw530_32/bin:$PATH
       script:
         - echo ${PATH}
-        - /c/Qt/${QT_VERSION}/mingw53_32/bin/qmake.exe CONFIG-=debug CONFIG+=experimental CONFIG+=snapshot CONFIG+=info -r "QMAKE_CXX=$CXX" "QMAKE_CC=$CC"
-        - /c/Qt/Tools/mingw530_32/bin/mingw32-make.exe -j2
+        - /c/Qt/${QT_VERSION}/mingw53_32/bin/qmake.exe
+        - /c/Qt/Tools/mingw530_32/bin/mingw32-make.exe
         - /c/Qt/Tools/mingw530_32/bin/mingw32-make.exe -k check
 
 install:
