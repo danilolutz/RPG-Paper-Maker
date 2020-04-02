@@ -52,7 +52,7 @@ jobs:
         - QT_VERSION=5.11.2
       script:
         - mkdir ~/install-qt-tools
-        - curl --progress-bar -sslv3 --verbose -L -o ~/install-qt-tools/package.7z https://qt.mirror.constant.com/online/qtsdkrepository/windows_x86/desktop/tools_mingw/qt.tools.win32_mingw530/5.3.0-2i686-5.3.0-release-posix-dwarf-rt_v4-rev0.7z
+        - curl --progress-bar -L -o ~/install-qt-tools/package.7z http://qt.mirror.constant.com/online/qtsdkrepository/windows_x86/desktop/tools_mingw/qt.tools.win32_mingw530/5.3.0-2i686-5.3.0-release-posix-dwarf-rt_v4-rev0.7z
         - 7z x -y -o/c/Qt ~/install-qt-tools/package.7z
         - rm -Rf ~/install-qt-tools
         - /c/Qt/${QT_VERSION}/mingw53_32/bin/qmake.exe
