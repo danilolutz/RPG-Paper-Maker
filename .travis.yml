@@ -73,7 +73,7 @@ jobs:
       script:
         - echo ${PATH}
         - /c/Qt/${QT_VERSION}/mingw53_32/bin/qmake.exe
-        - /c/Qt/Tools/mingw530_32/bin/mingw32-make.exe
+        - /c/Qt/Tools/mingw530_32/bin/mingw32-make.exe -fno-exceptions
         - /c/Qt/Tools/mingw530_32/bin/mingw32-make.exe -k check
 
 install:
