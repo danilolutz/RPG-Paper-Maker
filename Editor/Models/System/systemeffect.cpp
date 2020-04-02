@@ -1,4 +1,4 @@
-/*
+﻿/*
     RPG Paper Maker Copyright (C) 2017-2019 Wano
 
     RPG Paper Maker engine is under proprietary license.
@@ -31,15 +31,19 @@ const QString SystemEffect::JSON_IS_DAMAGE_CRITICAL = "idc";
 const QString SystemEffect::JSON_DAMAGE_CRITICAL_FORMULA = "dcf";
 const QString SystemEffect::JSON_IS_DAMAGE_PRECISION = "idp";
 const QString SystemEffect::JSON_DAMAGE_PRECISION_FORMULA = "dpf";
+const QString SystemEffect::JSON_IS_DAMAGE_STOCK_VARIABLE = "idsv";
+const QString SystemEffect::JSON_DAMAGE_STOCK_VARIABLE = "dsv";
 const QString SystemEffect::JSON_IS_ADD_STATUS = "iast";
 const QString SystemEffect::JSON_STATUS_ID = "sid";
 const QString SystemEffect::JSON_STATUS_PRECISION_FORMULA = "spf";
 const QString SystemEffect::JSON_IS_ADD_SKILL= "iask";
 const QString SystemEffect::JSON_ADD_SKILL_ID = "asid";
 const QString SystemEffect::JSON_PERFORM_SKILL_ID = "psid";
-const QString SystemEffect::JSON_COMMON_REACTION_ID = "crid";
+const QString SystemEffect::JSON_COMMON_REACTION = "cr";
 const QString SystemEffect::JSON_SPECIAL_ACTION_KIND = "sak";
 const QString SystemEffect::JSON_SCRIPT_FORMULA = "sf";
+const QString SystemEffect::JSON_IS_TEMPORARILY_CHANGE_TARGET = "itct";
+const QString SystemEffect::JSON_TEMPORARILY_CHANGE_TARGET_FORMULA = "tctf";
 
 // -------------------------------------------------------
 //
@@ -55,12 +59,12 @@ SystemEffect::SystemEffect() :
         false, new PrimitiveValue(QString("0")), false, PrimitiveValue
         ::createDefaultDataBaseValue(), false, new PrimitiveValue(QString("0")),
         false, new PrimitiveValue(QString("0")), false, new PrimitiveValue(
-        QString("100")), true, PrimitiveValue::createDefaultDataBaseValue(), new
-        PrimitiveValue(QString("100")), true, PrimitiveValue
-        ::createDefaultDataBaseValue(), PrimitiveValue
-        ::createDefaultDataBaseValue(), PrimitiveValue
-        ::createDefaultDataBaseValue(), EffectSpecialActionKind::ApplyWeapons,
-        PrimitiveValue::createDefaultMessageValue())
+        QString("100")), false, new SuperListItem(1), true, PrimitiveValue
+        ::createDefaultDataBaseValue(), new PrimitiveValue(QString("100")), true
+        , PrimitiveValue::createDefaultDataBaseValue(), PrimitiveValue
+        ::createDefaultDataBaseValue(), nullptr, EffectSpecialActionKind
+        ::ApplyWeapons, PrimitiveValue::createDefaultMessageValue(), false, new
+        PrimitiveValue(QString()))
 {
 
 }
@@ -72,11 +76,11 @@ SystemEffect::SystemEffect(EffectKind kind, DamagesKind damageKind,
     , PrimitiveValue *damagesElementID, bool isDamageVariance, PrimitiveValue
     *damagesVarianceFormula, bool isDamageCritical, PrimitiveValue
     *damagesCriticalFormula, bool isDamagePrecision, PrimitiveValue
-    *damagesPrecisionFormula, bool isAddStatus, PrimitiveValue *statusID,
-    PrimitiveValue *statusPrecisionFormula, bool isAddSkill, PrimitiveValue
-    *addSkillID, PrimitiveValue *performSkillID, PrimitiveValue
-    *commonReactionID, EffectSpecialActionKind specialActionKind, PrimitiveValue
-    *scriptFormula) :
+    *damagesPrecisionFormula, bool idsv, SuperListItem *dsv, bool isAddStatus,
+    PrimitiveValue *statusID, PrimitiveValue *statusPrecisionFormula, bool
+    isAddSkill, PrimitiveValue *addSkillID, PrimitiveValue *performSkillID,
+    EventCommand *commonReaction, EffectSpecialActionKind specialActionKind,
+    PrimitiveValue *scriptFormula, bool itct, PrimitiveValue *tctf) :
     SuperListItem(-1, "", true),
     m_kind(kind),
     m_damagesKind(new SuperListItem(static_cast<int>(damageKind), "")),
@@ -96,15 +100,19 @@ SystemEffect::SystemEffect(EffectKind kind, DamagesKind damageKind,
     m_damagesCriticalFormula(damagesCriticalFormula),
     m_isDamagePrecision(isDamagePrecision),
     m_damagesPrecisionFormula(damagesPrecisionFormula),
+    m_isDamageStockVariable(idsv),
+    m_damagesStockVariable(dsv),
     m_isAddStatus(isAddStatus),
     m_statusID(statusID),
     m_statusPrecisionFormula(statusPrecisionFormula),
     m_isAddSkill(isAddSkill),
     m_addSkillID(addSkillID),
     m_performSkillID(performSkillID),
-    m_commonReactionID(commonReactionID),
+    m_commonReaction(commonReaction),
     m_specialActionKind(specialActionKind),
-    m_scriptFormula(scriptFormula)
+    m_scriptFormula(scriptFormula),
+    m_isTemporarilyChangeTarget(itct),
+    m_temporarilyChangeTargetFormula(tctf)
 {
     m_damagesStatisticID->setModelDataBase(RPM::get()->project()->gameDatas()
         ->battleSystemDatas()->modelCommonStatistics());
@@ -118,8 +126,6 @@ SystemEffect::SystemEffect(EffectKind kind, DamagesKind damageKind,
         ->skillsDatas()->model());
     m_performSkillID->setModelDataBase(RPM::get()->project()->gameDatas()
         ->skillsDatas()->model());
-    m_commonReactionID->setModelDataBase(RPM::get()->project()->gameDatas()
-        ->commonEventsDatas()->modelCommonReactors());
 }
 
 SystemEffect::~SystemEffect() {
@@ -134,12 +140,17 @@ SystemEffect::~SystemEffect() {
     delete m_damagesVarianceFormula;
     delete m_damagesCriticalFormula;
     delete m_damagesPrecisionFormula;
+    delete m_damagesStockVariable;
     delete m_statusID;
     delete m_statusPrecisionFormula;
     delete m_addSkillID;
     delete m_performSkillID;
-    delete m_commonReactionID;
+    if (m_commonReaction != nullptr)
+    {
+        delete m_commonReaction;
+    }
     delete m_scriptFormula;
+    delete m_temporarilyChangeTargetFormula;
 }
 
 EffectKind SystemEffect::kind() const {
@@ -242,6 +253,21 @@ PrimitiveValue * SystemEffect::damagesPrecisionFormula() const {
     return m_damagesPrecisionFormula;
 }
 
+bool SystemEffect::isDamageStockVariable() const
+{
+    return m_isDamageStockVariable;
+}
+
+void SystemEffect::setIsDamageStockVariable(bool idsv)
+{
+    m_isDamageStockVariable = idsv;
+}
+
+SuperListItem * SystemEffect::damagesStockVariable() const
+{
+    return m_damagesStockVariable;
+}
+
 bool SystemEffect::isAddStatus() const {
     return m_isAddStatus;
 }
@@ -274,8 +300,13 @@ PrimitiveValue * SystemEffect::performSkillID() const {
     return m_performSkillID;
 }
 
-PrimitiveValue * SystemEffect::commonReactionID() const {
-    return m_commonReactionID;
+EventCommand * SystemEffect::commonReaction() const {
+    return m_commonReaction;
+}
+
+void SystemEffect::setCommonReaction(EventCommand *cr)
+{
+    m_commonReaction = cr;
 }
 
 EffectSpecialActionKind SystemEffect::specialActionKind() const {
@@ -288,6 +319,21 @@ void SystemEffect::setSpecialActionKind(EffectSpecialActionKind k) {
 
 PrimitiveValue * SystemEffect::scriptFormula() const {
     return m_scriptFormula;
+}
+
+bool SystemEffect::isTemporarilyChangeTarget() const
+{
+    return m_isTemporarilyChangeTarget;
+}
+
+void SystemEffect::setIsTemporarilyChangeTarget(bool itct)
+{
+    m_isTemporarilyChangeTarget = itct;
+}
+
+PrimitiveValue * SystemEffect::temporarilyChangeTargetFormula() const
+{
+    return m_temporarilyChangeTargetFormula;
 }
 
 // -------------------------------------------------------
@@ -305,12 +351,11 @@ SystemEffect * SystemEffect::createSpecialAction(EffectSpecialActionKind action)
         PrimitiveValue(0),  false, PrimitiveValue
         ::createDefaultDataBaseValue(), false, new PrimitiveValue(QString("0")),
         false, new PrimitiveValue(QString("0")), false, new PrimitiveValue(
-        QString("100")), true, PrimitiveValue::createDefaultDataBaseValue(), new
-        PrimitiveValue(QString("100")), true, PrimitiveValue
-        ::createDefaultDataBaseValue(), PrimitiveValue
-        ::createDefaultDataBaseValue(), PrimitiveValue
-        ::createDefaultDataBaseValue(), action, PrimitiveValue
-        ::createDefaultMessageValue());
+        QString("100")), false, new SuperListItem(1), true, PrimitiveValue
+        ::createDefaultDataBaseValue(), new PrimitiveValue(QString("100")), true
+        , PrimitiveValue::createDefaultDataBaseValue(), PrimitiveValue
+        ::createDefaultDataBaseValue(), nullptr, action, PrimitiveValue
+        ::createDefaultMessageValue(), false, new PrimitiveValue(QString()));
 }
 
 // -------------------------------------------------------
@@ -328,12 +373,12 @@ SystemEffect * SystemEffect::createStat(int stat, QString formula, QString min,
         PrimitiveValue(variance.isEmpty() ? QString("0") : variance), !critical
         .isEmpty(), new PrimitiveValue(critical.isEmpty() ? QString("0") :
         critical), !precision.isEmpty(), new PrimitiveValue(precision.isEmpty()
-        ? QString("100") : precision), true, PrimitiveValue
-        ::createDefaultDataBaseValue(), new PrimitiveValue(QString("100")), true
-        , PrimitiveValue::createDefaultDataBaseValue(), PrimitiveValue
-        ::createDefaultDataBaseValue(), PrimitiveValue
-        ::createDefaultDataBaseValue(), EffectSpecialActionKind::ApplyWeapons,
-        PrimitiveValue::createDefaultMessageValue());
+        ? QString("100") : precision), false, new SuperListItem(1), true,
+        PrimitiveValue::createDefaultDataBaseValue(), new PrimitiveValue(QString
+        ("100")), true, PrimitiveValue::createDefaultDataBaseValue(),
+        PrimitiveValue::createDefaultDataBaseValue(), nullptr,
+        EffectSpecialActionKind::ApplyWeapons, PrimitiveValue
+        ::createDefaultMessageValue(), false, new PrimitiveValue(QString()));
 }
 
 // -------------------------------------------------------
@@ -414,15 +459,34 @@ void SystemEffect::setCopy(const SuperListItem &super) {
     m_damagesCriticalFormula->setCopy(*effect->m_damagesCriticalFormula);
     m_isDamagePrecision = effect->m_isDamagePrecision;
     m_damagesPrecisionFormula->setCopy(*effect->m_damagesPrecisionFormula);
+    m_isDamageStockVariable = effect->m_isDamageStockVariable;
+    m_damagesStockVariable->setId(effect->m_damagesStockVariable->id());
     m_isAddStatus = effect->m_isAddStatus;
     m_statusID->setCopy(*effect->m_statusID);
     m_statusPrecisionFormula->setCopy(*effect->m_statusPrecisionFormula);
     m_isAddSkill = effect->m_isAddSkill;
     m_addSkillID->setCopy(*effect->m_addSkillID);
     m_performSkillID->setCopy(*effect->m_performSkillID);
-    m_commonReactionID->setCopy(*effect->m_commonReactionID);
+    if (effect->m_commonReaction == nullptr)
+    {
+        if (m_commonReaction != nullptr)
+        {
+            delete m_commonReaction;
+        }
+        m_commonReaction = nullptr;
+    } else
+    {
+        if (m_commonReaction == nullptr)
+        {
+            m_commonReaction = new EventCommand;
+        }
+        m_commonReaction->setCopy(*effect->m_commonReaction);
+    }
     m_specialActionKind = effect->m_specialActionKind;
     m_scriptFormula->setCopy(*effect->m_scriptFormula);
+    m_isTemporarilyChangeTarget = effect->m_isTemporarilyChangeTarget;
+    m_temporarilyChangeTargetFormula->setCopy(*effect
+        ->m_temporarilyChangeTargetFormula);
 }
 
 // -------------------------------------------------------
@@ -464,7 +528,9 @@ QString SystemEffect::toString() const {
             RPM::BRACKET_RIGHT : "") + (m_isDamagePrecision ? RPM::BRACKET_LEFT
             + RPM::translate(Translations::PRECISION) + RPM::COLON + RPM::SPACE
             + m_damagesPrecisionFormula->toString() + "%" + RPM::BRACKET_RIGHT :
-            "");
+            "") + (m_isDamageStockVariable ? RPM::BRACKET_LEFT + RPM::translate(
+            Translations::STOCK_VALUE_IN) + RPM::COLON + RPM::SPACE +
+            m_damagesStockVariable->toString() + "%" + RPM::BRACKET_RIGHT : "");
         break;
     }
     case EffectKind::Status:
@@ -482,7 +548,8 @@ QString SystemEffect::toString() const {
         text += "Perform skill " + m_performSkillID->toString();
         break;
     case EffectKind::CommonReaction:
-        text += "Call common reaction " + m_commonReactionID->toString();
+        text += m_commonReaction == nullptr ? RPM::translate(Translations
+            ::CALL_A_COMMON_REACTION) : m_commonReaction->toString();
         break;
     case EffectKind::SpecialActions:
         text += RPM::translate(Translations::SPECIAL_ACTION) + RPM::COLON + RPM
@@ -493,6 +560,12 @@ QString SystemEffect::toString() const {
         text += RPM::translate(Translations::SCRIPT) + RPM::COLON + RPM::SPACE +
             m_scriptFormula->toString();
         break;
+    }
+    if (m_isTemporarilyChangeTarget)
+    {
+        text += RPM::BRACKET_LEFT + RPM::translate(Translations
+            ::TEMPORARILY_CHANGE_TARGET) + RPM::COLON + RPM::SPACE +
+            m_temporarilyChangeTargetFormula->toString() + RPM::BRACKET_RIGHT;
     }
 
     return text;
@@ -573,6 +646,13 @@ void SystemEffect::read(const QJsonObject &json) {
                     .toObject());
             }
         }
+        if (json.contains(JSON_IS_DAMAGE_STOCK_VARIABLE)) {
+            m_isDamageStockVariable = json[JSON_IS_DAMAGE_STOCK_VARIABLE].toBool();
+            if (json.contains(JSON_DAMAGE_STOCK_VARIABLE)) {
+                m_damagesStockVariable->setId(json[JSON_DAMAGE_STOCK_VARIABLE]
+                    .toInt());
+            }
+        }
         break;
     case EffectKind::Status:
         if (json.contains(JSON_IS_ADD_STATUS)) {
@@ -600,8 +680,12 @@ void SystemEffect::read(const QJsonObject &json) {
         }
         break;
     case EffectKind::CommonReaction:
-        if (json.contains(JSON_COMMON_REACTION_ID)) {
-            m_commonReactionID->read(json[JSON_COMMON_REACTION_ID].toObject());
+        if (json.contains(JSON_COMMON_REACTION)) {
+            if (m_commonReaction == nullptr)
+            {
+                m_commonReaction = new EventCommand;
+            }
+            m_commonReaction->read(json[JSON_COMMON_REACTION].toObject());
         }
         break;
     case EffectKind::SpecialActions:
@@ -615,6 +699,16 @@ void SystemEffect::read(const QJsonObject &json) {
             m_scriptFormula->read(json[JSON_SCRIPT_FORMULA].toObject());
         }
         break;
+    }
+    if (json.contains(JSON_IS_TEMPORARILY_CHANGE_TARGET))
+    {
+        m_isTemporarilyChangeTarget = json[JSON_IS_TEMPORARILY_CHANGE_TARGET]
+            .toBool();
+        if (json.contains(JSON_TEMPORARILY_CHANGE_TARGET_FORMULA))
+        {
+            m_temporarilyChangeTargetFormula->read(json[
+                JSON_TEMPORARILY_CHANGE_TARGET_FORMULA].toObject());
+        }
     }
 }
 
@@ -721,6 +815,14 @@ void SystemEffect::write(QJsonObject &json) const {
                 json[JSON_DAMAGE_PRECISION_FORMULA] = obj;
             }
         }
+        if (m_isDamageStockVariable)
+        {
+            json[JSON_IS_DAMAGE_STOCK_VARIABLE] = m_isDamageStockVariable;
+            if (m_damagesStockVariable->id() != 1)
+            {
+                json[JSON_DAMAGE_STOCK_VARIABLE] = m_damagesStockVariable->id();
+            }
+        }
         break;
     }
     case EffectKind::Status:
@@ -764,12 +866,9 @@ void SystemEffect::write(QJsonObject &json) const {
         }
         break;
     case EffectKind::CommonReaction:
-        if (m_commonReactionID->kind() != PrimitiveValueKind::DataBase ||
-            m_commonReactionID->numberValue() != 1)
+        if (m_commonReaction != nullptr)
         {
-            obj = QJsonObject();
-            m_commonReactionID->write(obj);
-            json[JSON_COMMON_REACTION_ID] = obj;
+            json[JSON_COMMON_REACTION] = m_commonReaction->getJSON();
         }
         break;
     case EffectKind::SpecialActions:
@@ -786,5 +885,17 @@ void SystemEffect::write(QJsonObject &json) const {
             json[JSON_SCRIPT_FORMULA] = obj;
         }
         break;
+    }
+    if (m_isTemporarilyChangeTarget)
+    {
+        json[JSON_IS_TEMPORARILY_CHANGE_TARGET] = m_isTemporarilyChangeTarget;
+        if (m_temporarilyChangeTargetFormula->kind() != PrimitiveValueKind
+            ::Message || !m_temporarilyChangeTargetFormula->messageValue()
+            .isEmpty())
+        {
+            obj = QJsonObject();
+            m_temporarilyChangeTargetFormula->write(obj);
+            json[JSON_TEMPORARILY_CHANGE_TARGET_FORMULA] = obj;
+        }
     }
 }

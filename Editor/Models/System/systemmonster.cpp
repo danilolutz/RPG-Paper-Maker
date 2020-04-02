@@ -48,7 +48,7 @@ SystemMonster::~SystemMonster() {
     delete m_experience;
     this->deleteCurrencies();
     SuperListItem::deleteModel(m_modelLoots);
-    delete m_modelActions;
+    SuperListItem::deleteModel(m_modelActions);
 }
 
 SystemProgressionTable * SystemMonster::experience() const {
@@ -125,6 +125,25 @@ SystemProgressionTable * SystemMonster::currencyProgressionAt(int id) {
 }
 
 // -------------------------------------------------------
+
+void SystemMonster::updateProbabilities()
+{
+    QStandardItem *item;
+    SystemMonsterAction *action;
+    int i, l;
+
+    for (i = 0, l = m_modelActions->invisibleRootItem()->rowCount(); i < l; i++)
+    {
+        item = m_modelActions->item(i);
+        action = reinterpret_cast<SystemMonsterAction *>(item->data().value<
+            quintptr>());
+        if (action != nullptr) {
+            item->setText(action->probabilityToString());
+        }
+    }
+}
+
+// -------------------------------------------------------
 //
 //  VIRTUAL FUNCTIONS
 //
@@ -140,10 +159,7 @@ SuperListItem* SystemMonster::createCopy() const {
 
 void SystemMonster::setCopy(const SuperListItem &super) {
     const SystemMonster *monster;
-    QStandardItem *item;
-    QList<QStandardItem *> row;
     QHash<int, SystemProgressionTable *>::const_iterator i;
-    int j, l;
 
     SystemHero::setCopy(super);
     monster = reinterpret_cast<const SystemMonster *>(&super);
@@ -162,16 +178,12 @@ void SystemMonster::setCopy(const SuperListItem &super) {
 
     // Loots
     SuperListItem::deleteModel(m_modelLoots, false);
-    for (j = 0, l = monster->modelLoots()->invisibleRootItem()->rowCount(); j <
-         l - 1; j++)
-    {
-        m_modelLoots->appendRow(reinterpret_cast<SystemLoot *>(monster
-            ->modelLoots()->item(j)->data().value<qintptr>())->createCopy()
-            ->getModelRow());
-    }
-    item = new QStandardItem();
-    item->setText(SuperListItem::beginningText);
-    m_modelLoots->appendRow(item);
+    SuperListItem::copy(m_modelLoots, monster->m_modelLoots);
+
+    // Loots
+    SuperListItem::deleteModel(m_modelActions, false);
+    SuperListItem::copy(m_modelActions, monster->m_modelActions);
+
     this->initializeHeaders();
 }
 
@@ -186,16 +198,20 @@ void SystemMonster::read(const QJsonObject &json){
     QJsonArray tab;
     QJsonObject obj, objHash;
     QJsonArray jsonRow;
-    QList<QStandardItem *> row;
     SystemProgressionTable *table;
     int i, l;
+
+    SuperListItem::deleteModel(m_modelLoots, false);
+    SuperListItem::deleteModel(m_modelActions, false);
+    this->initializeHeaders();
 
     // Experience
     m_experience->read(json[JSON_EXPERIENCE].toObject());
 
     // Currencies
     tab = json[JSON_CURRENCIES].toArray();
-    for (i = 0, l = tab.size(); i < l; i++) {
+    for (i = 0, l = tab.size(); i < l; i++)
+    {
         objHash = tab.at(i).toObject();
         obj = objHash["v"].toObject();
         table = new SystemProgressionTable;
@@ -207,6 +223,7 @@ void SystemMonster::read(const QJsonObject &json){
     SuperListItem::readTree(m_modelLoots, new SystemLoot, json, JSON_LOOTS);
 
     // Actions
+    RPM::get()->setSelectedMonster(this);
     SuperListItem::readTree(m_modelActions, new SystemMonsterAction, json,
         JSON_ACTIONS);
 }

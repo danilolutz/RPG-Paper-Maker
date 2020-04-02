@@ -219,7 +219,7 @@ public:
     static const QString CAMERA_PROP;
     static const QString SKY;
     static const QString COLOR;
-    static const QString SKYBOX;
+    static const QString SKYBOX_ID;
     static const QString MAP_STARTUP_REACTIONS;
     static const QString BATTLES;
     static const QString WELCOME_FIRST_LAUNCH;
@@ -502,8 +502,6 @@ public:
     static const QString TOP;
     static const QString BOT;
     static const QString NEW_BOX_HEIGHT;
-    static const QString BIG_SQUARE_S;
-    static const QString BIG_PIXEL_S;
     static const QString AUTOMATIC;
     static const QString RADIUS;
     static const QString GENERATE;
@@ -1102,6 +1100,9 @@ public:
     static const QString USE_SKILL_ID;
     static const QString IS_UNDER_EFFECT_OF_STATUS_ID;
     static const QString TURN_VALUE_IS;
+    static const QString STOCK_VALUE_IN;
+    static const QString TEMPORARILY_CHANGE_TARGET;
+    static const QString SET_SKY_BOX;
 
     Translations();
     virtual ~Translations();
