@@ -41,7 +41,7 @@ jobs:
       script:
         - qmake
         - make
-        - make -k check
+        - xvfb-run make -k check
     - os: osx
       osx_image: xcode10.1
       stage: compile
