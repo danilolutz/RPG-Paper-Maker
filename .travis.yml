@@ -72,7 +72,7 @@ jobs:
         - export PATH=/c/Qt/Tools/mingw530_32/bin:$PATH
       script:
         - /c/Qt/${QT_VERSION}/mingw53_32/bin/qmake.exe
-        - /c/Qt/Tools/mingw530_32/bin/mingw32-make.exe CXXFLAGS="-j2 -fno-exceptions -fpermissive"
+        - /c/Qt/Tools/mingw530_32/bin/mingw32-make.exe CXXFLAGS=" -fno-exceptions -fpermissive "
         - /c/Qt/Tools/mingw530_32/bin/mingw32-make.exe -k check
 
 install:
