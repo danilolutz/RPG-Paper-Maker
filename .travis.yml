@@ -72,7 +72,7 @@ jobs:
         - export PATH=/c/Qt/Tools/mingw530_32/bin:$PATH
       script:
         - /c/Qt/${QT_VERSION}/mingw53_32/bin/qmake.exe
-        - /c/Qt/Tools/mingw530_32/bin/mingw32-make.exe CXXFLAGS=" -fPIC -std=c++11 -fno-exceptions -fpermissive "
+        - /c/Qt/Tools/mingw530_32/bin/mingw32-make.exe CXXFLAGS=" -pipe -O2 -fPIC -std=gnu++11 -Wall -W -D_REENTRANT -DQT_DEPRECATED_WARNINGS -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_MULTIMEDIAWIDGETS_LIB -DQT_WIDGETS_LIB -DQT_MULTIMEDIA_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB "
         - /c/Qt/Tools/mingw530_32/bin/mingw32-make.exe -k check
 
 install:
