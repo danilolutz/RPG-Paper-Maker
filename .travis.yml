@@ -56,7 +56,8 @@ jobs:
         - 7z x -y -o/c/Qt ~/install-qt-tools/package.7z >/dev/null 2>&1
         - rm -Rf ~/install-qt-tools
         - /c/Qt/${QT_VERSION}/mingw53_32/bin/qmake.exe -spec win32-g++
-        - /c/Qt/Tools/mingw530_32/bin/mingw32-make.exe qmake_all -k check
+        - /c/Qt/Tools/mingw530_32/bin/mingw32-make.exe
+        - /c/Qt/Tools/mingw530_32/bin/mingw32-make.exe -k check
 
 before_install:
   - |
