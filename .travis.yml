@@ -51,11 +51,10 @@ jobs:
       env:
         - QT_VERSION=5.11.2
       script:
-        - export DOWNLOAD_DIR=`mktemp -d 2>/dev/null || mktemp -d -t 'install-qt-tools'`
-        - echo ${DOWNLOAD_DIR}
-        - curl --progress-bar -sslv3 -L -o ${DOWNLOAD_DIR}/package.7z https://qt.mirror.constant.com/online/qtsdkrepository/windows_x86/desktop/tools_mingw/qt.tools.win32_mingw530/5.3.0-2i686-5.3.0-release-posix-dwarf-rt_v4-rev0.7z >&2
-        - 7z x -y -o/c/Qt ${DOWNLOAD_DIR}/package.7z >/dev/null 2>&1
-        - rm -f ${DOWNLOAD_DIR}/package.7z
+        - mkdir ~/install-qt-tools
+        - curl --progress-bar -sslv3 -L -o ~/install-qt-tools/package.7z https://qt.mirror.constant.com/online/qtsdkrepository/windows_x86/desktop/tools_mingw/qt.tools.win32_mingw530/5.3.0-2i686-5.3.0-release-posix-dwarf-rt_v4-rev0.7z
+        - 7z x -y -o/c/Qt ~/install-qt-tools/package.7z
+        - rm -Rf ~/install-qt-tools
         - /c/Qt/${QT_VERSION}/mingw53_32/bin/qmake.exe
         - /c/Qt/Tools/bin/mingw32-make.exe -k check
 
