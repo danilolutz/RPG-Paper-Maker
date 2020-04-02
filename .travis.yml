@@ -49,7 +49,7 @@ jobs:
       stage: compile
       compiler: gcc
       env:
-        - QT_VERSION=5.11.2
+        - QT_VERSION=5.10.0
       script:
         - mkdir ~/install-qt-tools
         - curl --progress-bar -L -o ~/install-qt-tools/package.7z http://qt.mirror.constant.com/online/qtsdkrepository/windows_x86/desktop/tools_mingw/qt.tools.win32_mingw530/5.3.0-2i686-5.3.0-release-posix-dwarf-rt_v4-rev0.7z >&2
