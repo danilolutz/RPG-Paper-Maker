@@ -24,7 +24,7 @@ for ((x=0; x < ${#PATHS[*]}; x++)) ; do
 		cp -r ${PATHS[$x]} ${PATHS_MODS[$x]}
 	else
 		PATH_GIT="${GIT_ROOT}${GIT_PATH[$x]}"
-		PATH_TEMP="~/temp/${GIT_PATH[$x]}"
+		PATH_TEMP=~/temp/${GIT_PATH[$x]}
 
 		echo "$REMOTE_MSG $PATH_GIT $MV_SYMBOL ${PATHS_MODS[$x]}"
 		if [ -d $PATH_TEMP ]; then
